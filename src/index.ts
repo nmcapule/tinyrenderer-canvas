@@ -1,5 +1,4 @@
 import { CanvasWrapper, Point, Color } from "./canvas_wrapper";
-import { drawTestRandomFilledTriangles } from "./examples";
 
 async function loadModel(url: string) {
   const response = await fetch(new URL(url));
