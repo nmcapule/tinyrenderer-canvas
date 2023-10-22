@@ -34,3 +34,33 @@ export function drawTestFilledTriangles(w: CanvasWrapper) {
   w.drawFilledTriangle(t1[0], t1[1], t1[2], new Color(0, 0, 255, 255));
   w.drawFilledTriangle(t2[0], t2[1], t2[2], new Color(0, 255, 0, 255));
 }
+
+export function drawTestRandomFilledTriangles(w: CanvasWrapper, n = 10) {
+  for (let i = 0; i < n; i++) {
+    const t0 = [
+      new Point(
+        Math.random() * w.canvas.width,
+        Math.random() * w.canvas.height
+      ),
+      new Point(
+        Math.random() * w.canvas.width,
+        Math.random() * w.canvas.height
+      ),
+      new Point(
+        Math.random() * w.canvas.width,
+        Math.random() * w.canvas.height
+      ),
+    ];
+    w.drawFilledTriangle(
+      t0[0],
+      t0[1],
+      t0[2],
+      new Color(
+        Math.floor(Math.random() * 255),
+        Math.floor(Math.random() * 255),
+        Math.floor(Math.random() * 255),
+        255
+      )
+    );
+  }
+}

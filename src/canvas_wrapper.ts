@@ -120,28 +120,48 @@ export class CanvasWrapper {
     this.drawLine(p2, p0, color);
   }
 
+  /**
+   * The non-useContextAPI path is slow AF, but it also works :))
+   *
+   * Based on ssloy/tinyrenderer lesson #2: Triangle rasterization :D
+   */
   drawFilledTriangle(p0: Point, p1: Point, p2: Point, color?: Color) {
+    if (this.useContextAPI) {
+      this.ctx.beginPath();
+      this.ctx.moveTo(p0.x, p0.y);
+      this.ctx.lineTo(p1.x, p1.y);
+      this.ctx.lineTo(p2.x, p2.y);
+      this.ctx.closePath();
+      this.ctx.fillStyle = this.colorize(color);
+      this.ctx.fill();
+      return;
+    }
+
     const vertices = [p0, p1, p2];
     vertices.sort((a, b) => a.y - b.y);
 
-    // this.drawLine(p0, p1, color);
-    // this.drawLine(p1, p2, color);
-    // this.drawLine(p2, p0, color);
-
     const max = Math.max(vertices[0].y, vertices[1].y, vertices[2].y);
     for (let y = vertices[0].y; y < max; y++) {
-      const left =
-        vertices[0].x +
-        ((y - vertices[0].y) / (vertices[2].y - vertices[0].y)) *
-          (vertices[2].x - vertices[0].x);
-      const right =
-        vertices[0].x +
-        ((y - vertices[0].y) / (vertices[1].y - vertices[0].y)) *
-          (vertices[1].x - vertices[0].x);
+      let base = vertices[0];
+      let second = vertices[1];
+      let third = vertices[2];
+
+      // Wth... i'm not sure what happened here, but if fucking works.
+      if (y >= vertices[1].y) {
+        base = vertices[2];
+        second = vertices[1];
+        third = vertices[0];
+      }
+
+      const deltaToBaseY = y - base.y;
+
+      const percentageProgressLeft = deltaToBaseY / (second.y - base.y);
+      const left = base.x - (base.x - second.x) * percentageProgressLeft;
+
+      const percentageProgressRight = deltaToBaseY / (third.y - base.y);
+      const right = base.x - (base.x - third.x) * percentageProgressRight;
 
       this.drawLine(new Point(left, y), new Point(right, y), color);
     }
-
-    console.log(vertices);
   }
 }

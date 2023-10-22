@@ -1,5 +1,8 @@
 import { CanvasWrapper } from "./canvas_wrapper";
-import { drawTestFilledTriangles } from "./examples";
+import {
+  drawTestFilledTriangles,
+  drawTestRandomFilledTriangles,
+} from "./examples";
 
 function render() {
   const canvas = document.getElementById("canvas") as HTMLCanvasElement;
@@ -8,11 +11,12 @@ function render() {
   }
 
   const w = new CanvasWrapper(canvas);
-  // w.useContextAPI = true;
+  w.useContextAPI = true;
   w.clear();
 
   const start = performance.now();
-  drawTestFilledTriangles(w);
+  // drawTestFilledTriangles(w);
+  drawTestRandomFilledTriangles(w, 100);
   const end = performance.now();
   console.log(`Took ${end - start}ms`);
 }
