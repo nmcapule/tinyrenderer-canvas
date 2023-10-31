@@ -1,5 +1,5 @@
 import { CanvasWrapper, Point, Color } from "./canvas_wrapper";
-import { Vec3, loadModel } from "./model_loader";
+import { loadModel } from "./model_loader";
 
 async function render() {
   const canvas = document.getElementById("canvas") as HTMLCanvasElement;
