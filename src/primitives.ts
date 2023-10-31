@@ -13,6 +13,14 @@ export class Vec3 {
     return new Vec3(arr[0], arr[1], arr[2]);
   }
 
+  sub(other: Vec3): Vec3 {
+    return new Vec3(this.x - other.x, this.y - other.y, this.z - other.z);
+  }
+
+  dot(other: Vec3): number {
+    return this.x * other.x + this.y * other.y + this.z * other.z;
+  }
+
   cross(other: Vec3): Vec3 {
     return new Vec3(
       this.y * other.z - this.z * other.y,
