@@ -8,6 +8,10 @@ export class Point {
     Object.freeze(this);
   }
 
+  public static fromObject(obj: { x: number; y: number }) {
+    return new Point(obj.x, obj.y);
+  }
+
   sub(other: Point): Point {
     return new Point(this.x - other.x, this.y - other.y);
   }
