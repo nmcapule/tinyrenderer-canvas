@@ -1,30 +1,5 @@
 import { CanvasWrapper, Point, Color } from "./canvas_wrapper";
-
-async function loadModel(url: string) {
-  const response = await fetch(new URL(url));
-  const payload = await response.text();
-
-  const object = {
-    v: [],
-    vt: [],
-    vn: [],
-    f: [],
-  };
-
-  for (const line of payload.split("\n")) {
-    const parts = line.split(" ");
-    if (!["v", "vt", "vn", "f"].includes(parts[0])) {
-      continue;
-    }
-    const t = parts[0];
-    const x = parseFloat(parts[1]);
-    const y = parseFloat(parts[2]);
-    const z = parseFloat(parts[3]);
-    object[t].push([x, y, z]);
-  }
-
-  return object;
-}
+import { Vec3, loadModel } from "./model_loader";
 
 async function render() {
   const canvas = document.getElementById("canvas") as HTMLCanvasElement;
@@ -39,16 +14,16 @@ async function render() {
   const model = await loadModel(`${window.location.href}african_head.obj`);
 
   const start = performance.now();
-  for (let i = 0; i < model["f"].length; i++) {
-    const face = model["f"][i];
+  for (let i = 0; i < model.faces.length; i++) {
+    const vertices = model.getVerticesForFace(model.faces[i]);
     for (let j = 0; j < 3; j++) {
-      const v0 = model["v"][face[j]];
-      const v1 = model["v"][face[(j + 1) % 3]];
+      const v0 = vertices[j];
+      const v1 = vertices[(j + 1) % 3];
       try {
-        const x0 = ((v0[0] + 1) * w.canvas.width) / 2;
-        const y0 = ((v0[1] + 1) * w.canvas.height) / 2;
-        const x1 = ((v1[0] + 1) * w.canvas.width) / 2;
-        const y1 = ((v1[1] + 1) * w.canvas.height) / 2;
+        const x0 = ((v0.x + 1) * w.canvas.width) / 2;
+        const y0 = ((v0.y + 1) * w.canvas.height) / 2;
+        const x1 = ((v1.x + 1) * w.canvas.width) / 2;
+        const y1 = ((v1.y + 1) * w.canvas.height) / 2;
         w.drawLine(
           new Point(x0, canvas.height - y0),
           new Point(x1, canvas.height - y1),
