@@ -53,6 +53,12 @@ export class CanvasWrapper {
     this.ctx = canvas.getContext("2d")!;
 
     this.useContextAPI = false;
+
+    // Make the origin be at the bottom left corner.
+    // this.ctx.transform(1, 0, 0, -1, 0, canvas.height);
+
+    // Make the origin at the center.
+    this.ctx.transform(1, 0, 0, -1, canvas.width * 0.5, canvas.height * 0.5);
   }
 
   clear() {

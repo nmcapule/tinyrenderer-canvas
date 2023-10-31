@@ -20,13 +20,13 @@ async function render() {
       const v0 = vertices[j];
       const v1 = vertices[(j + 1) % 3];
       try {
-        const x0 = ((v0.x + 1) * w.canvas.width) / 2;
-        const y0 = ((v0.y + 1) * w.canvas.height) / 2;
-        const x1 = ((v1.x + 1) * w.canvas.width) / 2;
-        const y1 = ((v1.y + 1) * w.canvas.height) / 2;
+        const x0 = (v0.x * w.canvas.width) / 2;
+        const y0 = (v0.y * w.canvas.height) / 2;
+        const x1 = (v1.x * w.canvas.width) / 2;
+        const y1 = (v1.y * w.canvas.height) / 2;
         w.drawLine(
-          new Point(x0, canvas.height - y0),
-          new Point(x1, canvas.height - y1),
+          new Point(x0, y0),
+          new Point(x1, y1),
           new Color(0, 0, 0, 255)
         );
       } catch (e) {
