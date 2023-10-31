@@ -1,50 +1,4 @@
-export class Point {
-  x: number;
-  y: number;
-
-  constructor(x: number, y: number) {
-    this.x = x;
-    this.y = y;
-    Object.freeze(this);
-  }
-
-  public static fromObject(obj: { x: number; y: number }) {
-    return new Point(obj.x, obj.y);
-  }
-
-  sub(other: Point): Point {
-    return new Point(this.x - other.x, this.y - other.y);
-  }
-
-  swap() {
-    return new Point(this.y, this.x);
-  }
-}
-
-export class Vec2 {
-  x: number;
-  y: number;
-
-  constructor(x: number, y: number) {
-    this.x = x;
-    this.y = y;
-    Object.freeze(this);
-  }
-}
-
-export class Color {
-  r: number;
-  g: number;
-  b: number;
-  a: number;
-  constructor(r: number, g: number, b: number, a: number) {
-    this.r = r;
-    this.g = g;
-    this.b = b;
-    this.a = a;
-    Object.freeze(this);
-  }
-}
+import { Color, Vec2 } from "./primitives";
 
 export class CanvasWrapper {
   canvas: HTMLCanvasElement;
@@ -76,7 +30,7 @@ export class CanvasWrapper {
     return `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`;
   }
 
-  drawPixel(p: Point, color?: Color) {
+  drawPixel(p: Vec2, color?: Color) {
     if (color) {
       this.ctx.fillStyle = `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`;
     }
@@ -90,7 +44,7 @@ export class CanvasWrapper {
    * purposes. It took me more than 2 hours just to get this right :P It's
    * not even optimized :))
    */
-  drawLine(p0: Point, p1: Point, color?: Color) {
+  drawLine(p0: Vec2, p1: Vec2, color?: Color) {
     if (this.useContextAPI) {
       this.ctx.beginPath();
       this.ctx.moveTo(p0.x, p0.y);
@@ -117,14 +71,14 @@ export class CanvasWrapper {
     for (let x = p0.x; x <= p1.x; x++) {
       const y = p0.y + (x - p0.x) * slope;
       if (steep) {
-        this.drawPixel(new Point(y, x), color);
+        this.drawPixel(new Vec2(y, x), color);
       } else {
-        this.drawPixel(new Point(x, y), color);
+        this.drawPixel(new Vec2(x, y), color);
       }
     }
   }
 
-  drawTriangle(p0: Point, p1: Point, p2: Point, color?: Color) {
+  drawTriangle(p0: Vec2, p1: Vec2, p2: Vec2, color?: Color) {
     this.drawLine(p0, p1, color);
     this.drawLine(p1, p2, color);
     this.drawLine(p2, p0, color);
@@ -135,7 +89,7 @@ export class CanvasWrapper {
    *
    * Based on ssloy/tinyrenderer lesson #2: Triangle rasterization :D
    */
-  drawFilledTriangle(p0: Point, p1: Point, p2: Point, color?: Color) {
+  drawFilledTriangle(p0: Vec2, p1: Vec2, p2: Vec2, color?: Color) {
     if (this.useContextAPI) {
       this.ctx.beginPath();
       this.ctx.moveTo(p0.x, p0.y);
@@ -171,7 +125,7 @@ export class CanvasWrapper {
       const percentageProgressRight = deltaToBaseY / (third.y - base.y);
       const right = base.x - (base.x - third.x) * percentageProgressRight;
 
-      this.drawLine(new Point(left, y), new Point(right, y), color);
+      this.drawLine(new Vec2(left, y), new Vec2(right, y), color);
     }
   }
 }

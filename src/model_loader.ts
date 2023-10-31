@@ -1,18 +1,4 @@
-export class Vec3 {
-  x: number;
-  y: number;
-  z: number;
-
-  constructor(x: number, y: number, z: number) {
-    this.x = x;
-    this.y = y;
-    this.z = z;
-  }
-
-  public static fromArray(arr: Array<number>): Vec3 {
-    return new Vec3(arr[0], arr[1], arr[2]);
-  }
-}
+import { Vec3 } from "./primitives";
 
 export async function loadModel(url: string): Promise<Model> {
   const response = await fetch(new URL(url));
