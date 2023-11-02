@@ -1,15 +1,17 @@
 import { barycentric } from "./geometry";
-import { Color, Vec2 } from "./primitives";
+import { Color, Vec2, Vec3 } from "./primitives";
 
 export class CanvasWrapper {
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
+  zBuffer: Array<number>;
 
   useContextAPI: boolean;
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d")!;
+    this.resetZBuffer();
 
     this.useContextAPI = false;
 
@@ -22,6 +24,13 @@ export class CanvasWrapper {
 
   clear() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  }
+
+  resetZBuffer() {
+    this.zBuffer = Array.from(
+      { length: this.canvas.width * this.canvas.height },
+      () => -Infinity
+    );
   }
 
   private colorize(color?: Color) {
@@ -85,19 +94,28 @@ export class CanvasWrapper {
     this.drawLine(p2, p0, color);
   }
 
-  drawBarycentricTriangle(p0: Vec2, p1: Vec2, p2: Vec2, color?: Color) {
+  drawBarycentricTriangle([p0, p1, p2]: Array<Vec3>, color?: Color) {
     const boundingBox = {
       a: new Vec2(Math.min(p0.x, p1.x, p2.x), Math.min(p0.y, p1.y, p2.y)),
       b: new Vec2(Math.max(p0.x, p1.x, p2.x), Math.max(p0.y, p1.y, p2.y)),
     };
 
-    for (let x = boundingBox.a.x; x <= boundingBox.b.x; x++) {
-      for (let y = boundingBox.a.y; y <= boundingBox.b.y; y++) {
-        const bc = barycentric([p0, p1, p2], new Vec2(x, y));
+    for (let px = boundingBox.a.x; px <= boundingBox.b.x; px++) {
+      for (let py = boundingBox.a.y; py <= boundingBox.b.y; py++) {
+        const bc = barycentric([p0, p1, p2], new Vec2(px, py));
         if (bc.x < 0 || bc.y < 0 || bc.z < 0) {
           continue;
         }
-        this.drawPixel(new Vec2(x, y), color);
+
+        const pz = p0.z * bc.z + p1.z * bc.x + p2.z * bc.y;
+
+        const offset = (this.canvas.width * this.canvas.height) / 2;
+        const idx = Math.floor(px + py * this.canvas.width + offset);
+
+        if (this.zBuffer[idx] < pz) {
+          this.zBuffer[idx] = pz;
+          this.drawPixel(new Vec2(px, py), color);
+        }
       }
     }
   }

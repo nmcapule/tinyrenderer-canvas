@@ -7,14 +7,17 @@ async function render(
   models: Array<Model>,
   lightDir: Vec3 = new Vec3(0, 0, -1)
 ) {
+  w.clear();
+  w.resetZBuffer();
   const start = performance.now();
   for (const model of models) {
     for (const face of model.faces) {
       const vertices = model.getVerticesForFace(face);
       const points = vertices.map((v) =>
-        Vec2.fromObject({
+        Vec3.fromObject({
           x: (v.x * w.canvas.width) / 2,
           y: (v.y * w.canvas.height) / 2,
+          z: v.z,
         })
       );
 
@@ -33,7 +36,7 @@ async function render(
         255
       );
 
-      w.drawBarycentricTriangle(points[0], points[1], points[2], color);
+      w.drawBarycentricTriangle(points, color);
     }
   }
   const end = performance.now();

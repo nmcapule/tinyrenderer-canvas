@@ -13,6 +13,18 @@ export class Vec3 {
     return new Vec3(arr[0], arr[1], arr[2]);
   }
 
+  public static fromObject({
+    x,
+    y,
+    z,
+  }: {
+    x: number;
+    y: number;
+    z: number;
+  }): Vec3 {
+    return new Vec3(x, y, z);
+  }
+
   sub(other: Vec3): Vec3 {
     return new Vec3(this.x - other.x, this.y - other.y, this.z - other.z);
   }
