@@ -1,3 +1,4 @@
+import { barycentric } from "./geometry";
 import { Color, Vec2 } from "./primitives";
 
 export class CanvasWrapper {
@@ -82,6 +83,23 @@ export class CanvasWrapper {
     this.drawLine(p0, p1, color);
     this.drawLine(p1, p2, color);
     this.drawLine(p2, p0, color);
+  }
+
+  drawBarycentricTriangle(p0: Vec2, p1: Vec2, p2: Vec2, color?: Color) {
+    const boundingBox = {
+      a: new Vec2(Math.min(p0.x, p1.x, p2.x), Math.min(p0.y, p1.y, p2.y)),
+      b: new Vec2(Math.max(p0.x, p1.x, p2.x), Math.max(p0.y, p1.y, p2.y)),
+    };
+
+    for (let x = boundingBox.a.x; x <= boundingBox.b.x; x++) {
+      for (let y = boundingBox.a.y; y <= boundingBox.b.y; y++) {
+        const bc = barycentric([p0, p1, p2], new Vec2(x, y));
+        if (bc.x < 0 || bc.y < 0 || bc.z < 0) {
+          continue;
+        }
+        this.drawPixel(new Vec2(x, y), color);
+      }
+    }
   }
 
   /**

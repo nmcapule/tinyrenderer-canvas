@@ -33,7 +33,7 @@ async function render(
         255
       );
 
-      w.drawFilledTriangle(points[0], points[1], points[2], color);
+      w.drawBarycentricTriangle(points[0], points[1], points[2], color);
     }
   }
   const end = performance.now();
