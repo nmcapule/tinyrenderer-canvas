@@ -9,8 +9,8 @@ async function render(
 ) {
   const start = performance.now();
   for (const model of models) {
-    for (let i = 0; i < model.faces.length; i++) {
-      const vertices = model.getVerticesForFace(model.faces[i]);
+    for (const face of model.faces) {
+      const vertices = model.getVerticesForFace(face);
       const points = vertices.map((v) =>
         Vec2.fromObject({
           x: (v.x * w.canvas.width) / 2,
@@ -37,7 +37,7 @@ async function render(
     }
   }
   const end = performance.now();
-  // console.log(`Took ${end - start}ms`);
+  console.log(`Took ${end - start}ms`);
 }
 
 async function init() {
